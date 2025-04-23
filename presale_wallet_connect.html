@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SBX Presale - Phantom Pay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fefdf6;
+      color: #1e1e1e;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #2f9c41;
+    }
+    label, input {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    input {
+      padding: 10px;
+      width: 250px;
+    }
+    button {
+      padding: 12px 25px;
+      margin-top: 15px;
+      font-size: 16px;
+      background-color: #ff7c2d;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e4691d;
+    }
+    #status {
+      margin-top: 20px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+<h1>SBX Presale</h1>
+<p>Price: <strong>1 SBX = 0.0001 SOL</strong></p>
+<p>Send SOL and get your ShibeBucks tokens instantly!</p>
+
+<button onclick="connectWallet()">🔐 Connect Phantom Wallet</button>
+<p id="walletAddress"></p>
+
+<br/>
+<label for="sbxAmount">Amount of SBX to buy:</label>
+<input type="number" id="sbxAmount" placeholder="e.g. 10000" />
+<br/>
+<button onclick="buySBX()">💸 Send SOL</button>
+
+<p id="status"></p>
+
+<script>
+  const receiverAddress = "7uobNBRVrXFN5dxKbRvJq55sx8PMdZENrMWqqXdgnG8i";
+  const pricePerSBX = 0.0001; // in SOL
+
+  let provider = null;
+
+  function connectWallet() {
+    if ("solana" in window) {
+      provider = window.solana;
+      if (provider.isPhantom) {
+        provider.connect().then(res => {
+          document.getElementById("walletAddress").innerText = "Connected: " + res.publicKey.toString();
+        }).catch(err => {
+          document.getElementById("walletAddress").innerText = "Connection failed.";
+        });
+      } else {
+        alert("Please install Phantom Wallet.");
+      }
+    } else {
+      alert("Phantom Wallet not detected.");
+    }
+  }
+
+  async function buySBX() {
+    const amountSBX = parseInt(document.getElementById("sbxAmount").value);
+    if (!provider || !amountSBX || amountSBX <= 0) {
+      alert("Connect wallet and enter valid amount.");
+      return;
+    }
+
+    const solToSend = amountSBX * pricePerSBX;
+    const transaction = new solanaWeb3.Transaction().add(
+      solanaWeb3.SystemProgram.transfer({
+        fromPubkey: provider.publicKey,
+        toPubkey: new solanaWeb3.PublicKey(receiverAddress),
+        lamports: solanaWeb3.LAMPORTS_PER_SOL * solToSend,
+      })
+    );
+
+    try {
+      let { blockhash } = await provider.connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = provider.publicKey;
+
+      let signed = await provider.signTransaction(transaction);
+      let signature = await provider.connection.sendRawTransaction(signed.serialize());
+      document.getElementById("status").innerText = "✅ Transaction sent! Signature: " + signature;
+    } catch (err) {
+      console.error(err);
+      document.getElementById("status").innerText = "❌ Transaction failed.";
+    }
+  }
+</script>
+
+</body>
+</html>
