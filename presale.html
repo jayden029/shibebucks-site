@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShibeBucks (SBX) Presale</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fefdf6;
+      color: #1e1e1e;
+      padding: 30px;
+    }
+    h1 {
+      color: #2f9c41;
+    }
+    .highlight {
+      color: #ff7c2d;
+      font-weight: bold;
+    }
+    input, button {
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      width: 100%;
+      max-width: 400px;
+      display: block;
+    }
+    button {
+      background-color: #ff7c2d;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #e4691d;
+    }
+  </style>
+</head>
+<body>
+
+<h1>ShibeBucks (SBX) Presale</h1>
+
+<p>Welcome to the official presale of <strong>ShibeBucks (SBX)</strong>! Get in early and become part of the fastest-growing meme-coin on the Solana blockchain.</p>
+<ul>
+  <li><strong>Total Supply Available:</strong> 50,000,000 SBX</li>
+  <li><strong>Presale Price:</strong> 1 SBX = 0.0001 SOL</li>
+  <li><strong>How to Buy:</strong> Send SOL to the address below and fill out the form to claim your SBX.</li>
+</ul>
+<h3 style="color:#ff7c2d;">SOL Wallet to send to:</h3>
+<p style="font-weight:bold; color:#2f9c41; font-size:1.2em;">7uobNBRVrXFN5dxKbRvJq55sx8PMdZENrMWqqXdgnG8i</p>
+<p><strong>Minimum Purchase:</strong> 1 SOL<br><strong>Maximum Purchase:</strong> 100 SOL</p>
+<p>Make sure to enter your Solana wallet address in the form below after payment!</p>
+
+
+<form name="presaleForm" method="POST" netlify>
+  <label>Your Email:</label>
+  <input type="email" name="email" placeholder="you@example.com" required>
+
+  <label>Your Solana Wallet Address:</label>
+  <input type="text" name="wallet" placeholder="Enter your Solana address" required>
+
+  <label>Amount Sent in SOL:</label>
+  <input type="number" name="sol_amount" step="0.0001" required>
+
+  <button type="submit">Submit Purchase Info</button>
+</form>
+
+<p><em>This is a decentralized presale. Make sure you send SOL from a wallet where you control the keys (not from an exchange).</em></p>
+
+</body>
+</html>
