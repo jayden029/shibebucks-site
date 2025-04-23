@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShibeBucks (SBX) Presale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fefdf6;
+      color: #1e1e1e;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #2f9c41;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      width: 260px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #ff7c2d;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e4691d;
+    }
+    #statusMessage {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🔥 ShibeBucks (SBX) Presale</h1>
+<p>Connect your Phantom Wallet to buy SBX now!</p>
+
+<button onclick="connectWallet()">🔐 Connect Phantom</button>
+<p id="walletDisplay"></p>
+
+<h3>Buy SBX</h3>
+<input type="number" id="amountInput" placeholder="Enter SBX amount (min 1000)" />
+<br>
+<button onclick="sendSOL()">💸 Pay & Claim SBX</button>
+
+<p id="statusMessage"></p>
+
+<script>
+  let provider = null;
+  const mintPrice = 0.0001;
+  const minAmount = 1000;
+  const maxSupply = 200000000;
+  let totalSold = 0;
+
+  const recipientWallet = "7uobNBRVrXFN5dxKbRvJq55sx8PMdZENrMWqqXdgnG8i";
+
+  async function connectWallet() {
+    if ("solana" in window) {
+      provider = window.solana;
+      if (provider.isPhantom) {
+        try {
+          const res = await provider.connect();
+          document.getElementById("walletDisplay").innerText = "Connected: " + res.publicKey.toString();
+        } catch (err) {
+          alert("Wallet connect cancelled.");
+        }
+      } else {
+        alert("Please install Phantom Wallet.");
+      }
+    }
+  }
+
+  async function sendSOL() {
+    if (!provider || !provider.publicKey) {
+      alert("Please connect your wallet first.");
+      return;
+    }
+
+    const sbxAmount = parseInt(document.getElementById("amountInput").value);
+    if (isNaN(sbxAmount) || sbxAmount < minAmount) {
+      alert("Minimum purchase is 1000 SBX.");
+      return;
+    }
+
+    if (totalSold + sbxAmount > maxSupply) {
+      document.getElementById("statusMessage").innerText = "❌ Max presale cap reached.";
+      return;
+    }
+
+    const solAmount = sbxAmount * mintPrice;
+    const tx = new solanaWeb3.Transaction().add(
+      solanaWeb3.SystemProgram.transfer({
+        fromPubkey: provider.publicKey,
+        toPubkey: new solanaWeb3.PublicKey(recipientWallet),
+        lamports: solanaWeb3.LAMPORTS_PER_SOL * solAmount,
+      })
+    );
+
+    try {
+      tx.feePayer = provider.publicKey;
+      let { blockhash } = await provider.connection.getRecentBlockhash();
+      tx.recentBlockhash = blockhash;
+      const signed = await provider.signTransaction(tx);
+      const signature = await provider.connection.sendRawTransaction(signed.serialize());
+      totalSold += sbxAmount;
+      document.getElementById("statusMessage").innerText = "✅ Purchase successful! Tx: " + signature;
+    } catch (e) {
+      console.error(e);
+      document.getElementById("statusMessage").innerText = "❌ Transaction failed.";
+    }
+  }
+</script>
+
+</body>
+</html>
