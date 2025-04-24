@@ -77,7 +77,7 @@
 <script>
   let provider = null;
   const mintPrice = 0.0001;
-  const minAmount = 1000;
+  const minAmount = 500;
   const maxSupply = 200000000;
   let totalSold = 0;
   const recipientWallet = "7uobNBRVrXFN5dxKbRvJq55sx8PMdZENrMWqqXdgnG8i";
@@ -107,7 +107,7 @@
 
     const sbxAmount = parseInt(document.getElementById("amountInput").value);
     if (isNaN(sbxAmount) || sbxAmount < minAmount) {
-      alert("Minimum purchase is 1000 SBX.");
+      alert("Minimum purchase is 500 SBX.");
       return;
     }
 
